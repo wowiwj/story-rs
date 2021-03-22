@@ -1,10 +1,11 @@
 use config::{Config, File, ConfigError};
+use serde::{Deserialize,Serialize};
 
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Server {
     pub host: String,
-    pub port: i32,
+    pub port: u32,
     pub domain: String,
 }
 
@@ -14,12 +15,34 @@ impl Server {
     }
 }
 
+#[derive(Clone,Deserialize,Serialize)]
+pub enum DatabaseDriver {
+    #[serde(rename="mysql")]
+    Mysql,
+    #[serde(rename="sqlite")]
+    Sqlite,
+}
+
+
+
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Database {
+    pub driver: DatabaseDriver,
+    pub username: String,
+    pub password: String,
+    pub host: String,
+    pub port: u32,
+    pub database: String,
+}
 
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Setting {
-    pub server: Server
+    pub server: Server,
+    pub database: Database,
 }
+
 
 impl Setting {
     pub fn new(name: &str) -> Result<Setting, ConfigError> {

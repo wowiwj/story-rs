@@ -1,11 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
-extern crate serde;
 
 mod setting;
+mod state;
 
-use tide::log;
+use tide::{log,prelude::*};
 
 lazy_static!(
     static ref CONFIG: setting::Setting = setting::Setting::new("config").expect("Config Load Error");
@@ -17,7 +16,7 @@ async fn main() -> tide::Result<()> {
     log::info!("setting, {}", CONFIG.server.domain);
     let mut app = tide::new();
     app.at("/").get(|_| async {
-        Ok("hello world")
+        Ok(json!{CONFIG.clone()})
     });
     log::info!("app is running");
     app.listen(CONFIG.server.clone().listener()).await?;
