@@ -1,5 +1,5 @@
 use config::{Config, File, ConfigError};
-use serde::{Deserialize,Serialize};
+use serde::{Deserialize, Serialize};
 
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -15,15 +15,13 @@ impl Server {
     }
 }
 
-#[derive(Clone,Deserialize,Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 pub enum DatabaseDriver {
-    #[serde(rename="mysql")]
+    #[serde(rename = "mysql")]
     Mysql,
-    #[serde(rename="sqlite")]
+    #[serde(rename = "sqlite")]
     Sqlite,
 }
-
-
 
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -34,6 +32,19 @@ pub struct Database {
     pub host: String,
     pub port: u32,
     pub database: String,
+}
+
+impl Database {
+    pub fn url(&self) -> String {
+        match self.driver {
+            DatabaseDriver::Mysql => {
+                format!("mysql://{}:{}@{}:{}/{}", self.username, self.password, self.host, self.port, self.database)
+            }
+            DatabaseDriver::Sqlite => {
+                format!("sqlite::memory:")
+            }
+        }
+    }
 }
 
 

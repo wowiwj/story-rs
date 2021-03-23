@@ -3,8 +3,10 @@ extern crate lazy_static;
 
 mod setting;
 mod state;
+mod users;
 
 use tide::{log,prelude::*};
+use crate::state::State;
 
 lazy_static!(
     static ref CONFIG: setting::Setting = setting::Setting::new("config").expect("Config Load Error");
@@ -14,7 +16,15 @@ lazy_static!(
 async fn main() -> tide::Result<()> {
     log::start();
     log::info!("setting, {}", CONFIG.server.domain);
-    let mut app = tide::new();
+    let state = State::new().await?;
+    let mut app = tide::with_state(state.clone());
+
+    app.at("/api").nest({
+        let mut api = tide::with_state(state.clone());
+        users::routes(&mut api);
+        api
+    });
+
     app.at("/").get(|_| async {
         Ok(json!{CONFIG.clone()})
     });
