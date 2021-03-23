@@ -1996,6 +1996,7 @@ dependencies = [
  "bitflags",
  "byteorder",
  "bytes",
+ "chrono",
  "crc",
  "crossbeam-channel",
  "crossbeam-queue 0.3.1",
@@ -2135,6 +2136,7 @@ name = "story-rs"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "chrono",
  "config",
  "lazy_static",
  "serde 1.0.124",

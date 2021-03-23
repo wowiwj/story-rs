@@ -1,4 +1,5 @@
 mod handlers;
+mod schema;
 
 use tide::Server;
 use crate::state::State;
