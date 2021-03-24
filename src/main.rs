@@ -4,6 +4,7 @@ extern crate lazy_static;
 mod setting;
 mod state;
 mod users;
+mod util;
 
 use tide::{log,prelude::*};
 use crate::state::State;

@@ -5,6 +5,6 @@ use crate::users::schema::ResUser;
 
 pub async fn index(req: tide::Request<State>) -> tide::Result {
     let conn = &req.state().db;
-    let result = query_as!(ResUser,r#"select id,name,email,phone,created_at from users"#).fetch_all(conn).await?;
+    let result: Vec<ResUser> = query_as!(ResUser,r#"select id,name,email,phone,created_at from users"#).fetch_all(conn).await?;
     Ok(Response::from(json! {result}))
 }

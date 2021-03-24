@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Server {
     pub host: String,
-    pub port: u32,
+    pub port: u16,
     pub domain: String,
 }
 
@@ -30,7 +30,7 @@ pub struct Database {
     pub username: String,
     pub password: String,
     pub host: String,
-    pub port: u32,
+    pub port: u16,
     pub database: String,
 }
 
