@@ -13,7 +13,7 @@ pub(crate) enum Gender {
     Female = 2,
 }
 
-#[derive(FromRow,Serialize)]
+#[derive(FromRow,Serialize,Clone)]
 pub(crate) struct User {
     pub id: u64,
     pub name: String,

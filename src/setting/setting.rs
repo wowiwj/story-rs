@@ -7,6 +7,7 @@ pub struct Server {
     pub host: String,
     pub port: u16,
     pub domain: String,
+    pub jwt_secret: String,
 }
 
 impl Server {

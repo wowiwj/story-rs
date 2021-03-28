@@ -1,10 +1,11 @@
 use {tide::Response};
 use crate::state::State;
 use sqlx::query_as;
-use crate::users::schema::{ResUser, Register};
+use crate::users::schema::{ResUser, Register, ResAuthUser};
 use validator::Validate;
 use crate::util::api::{Api, ApiErr};
 use crate::models::users::User;
+use crate::util::jwt::AuthUser;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {
@@ -25,7 +26,12 @@ pub async fn register(mut req: tide::Request<State>) -> tide::Result {
     let mut  user = User::from(reg_data);
     let id = user.create(conn).await?;
     user.id = id;
-    Api::success(ResUser::from(user))
+    let token = AuthUser::from(&user).create_token()?;
+
+    Api::success(ResAuthUser{
+        user: ResUser::from(user),
+        token: token
+    })
 }
 
 pub async fn login(_req: tide::Request<State>) -> tide::Result {

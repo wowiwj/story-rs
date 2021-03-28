@@ -5,15 +5,24 @@ use crate::util::date_format;
 use validator::Validate;
 use crate::models::users::User;
 
+
 #[derive(Deserialize,Serialize,Validate)]
 pub(crate) struct Register {
+    #[validate(length(min = 2, message = "用户名不能小于2位"))]
     pub username: String,
     #[validate(email(message = "请输入正确的邮箱"))]
     pub email: String,
     pub phone: Option<String>,
+    #[validate(length(min = 6, message = "密码不能小于6位"))]
     pub password: String,
 }
 
+
+#[derive(Deserialize, Serialize)]
+pub(crate) struct ResAuthUser {
+    pub(crate) user: ResUser,
+    pub(crate) token: String,
+}
 
 #[derive(Deserialize, Serialize)]
 pub(crate) struct ResUser {
