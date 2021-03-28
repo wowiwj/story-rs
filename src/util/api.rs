@@ -1,6 +1,42 @@
-use serde::Serialize;
+use serde::{Serialize};
 use crate::util::status;
 use {tide::Response, tide::prelude::*,tide::StatusCode};
+
+use std::collections::HashMap;
+
+
+
+#[derive(Serialize)]
+pub struct ApiErr {
+    pub meta: HashMap<String, Vec<String>>
+}
+
+impl ApiErr {
+    pub fn builder() -> Self {
+        Self {
+            meta: HashMap::new()
+        }
+    }
+
+    pub fn add(&mut self, typ: &str, info: &str) -> &mut Self {
+        let meta_info = self.meta.get_mut(typ);
+        match meta_info {
+            Some(meta) => {
+                meta.push(String::from(info));
+                self
+            }
+            None => {
+                let meta = vec![String::from(info)];
+                self.meta.insert(String::from(typ), meta);
+                self
+            }
+        }
+    }
+
+    pub fn build(&self) -> HashMap<String, Vec<String>> {
+        self.meta.clone()
+    }
+}
 
 
 #[derive(Serialize)]
@@ -48,6 +84,10 @@ impl<T: Serialize> Api<T> {
         self
     }
 
+    pub fn error_validate(errors: T) -> tide::Result {
+        Self::builder(&status::BAD_REQUEST).errors(errors).response()
+    }
+
     pub fn response(&self) -> tide::Result {
         let s_json = json!(self);
         let mut res = Response::new(StatusCode::Ok);
@@ -55,11 +95,12 @@ impl<T: Serialize> Api<T> {
         Ok(res)
     }
 
-    pub fn success(data: Option<T>) -> tide::Result {
-        Self::new(data, &status::OK, None).response()
+    pub fn success(data: T) -> tide::Result {
+        Self::new(Some(data), &status::OK, None).response()
     }
 
-    pub fn error(e: Option<T>) -> tide::Result {
-        Self::new(None, &status::BAD_REQUEST, e).response()
+    pub fn error(e: T) -> tide::Result {
+        Self::new(None, &status::BAD_REQUEST, Some(e)).response()
     }
+
 }
