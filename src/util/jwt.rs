@@ -32,9 +32,9 @@ struct Claims {
 impl From<&AuthUser> for Claims {
     fn from(u: &AuthUser) -> Self {
         Self {
-            sub: u.email.clone(),
-            username: u.username.clone(),
-            uid: u.id.clone(),
+            sub: u.email.to_string(),
+            username: u.username.to_string(),
+            uid: u.id,
             exp: (Local::now() + Duration::hours(24)).timestamp() as usize,
         }
     }
