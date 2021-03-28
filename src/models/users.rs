@@ -1,8 +1,8 @@
 use sqlx::types::chrono::{DateTime, Utc};
-use sqlx::{FromRow, MySqlPool, Acquire};
+use sqlx::{FromRow, MySqlPool};
 use crate::users::schema::Register;
 use serde::Serialize;
-
+use crate::util::crypt::hash_password;
 
 
 #[derive(sqlx::Type, Debug)]
@@ -56,7 +56,7 @@ impl From<Register> for User {
             name: r.username,
             email: r.email,
             phone: r.phone,
-            password: r.password,
+            password: hash_password(&r.password),
             gender: Gender::None as u32,
             created_at: now,
             updated_at: None,
