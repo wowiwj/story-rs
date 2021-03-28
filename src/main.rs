@@ -6,8 +6,9 @@ mod state;
 mod users;
 mod util;
 
-use tide::{log,prelude::*};
+
 use crate::state::State;
+use tide::log;
 
 lazy_static!(
     static ref CONFIG: setting::Setting = setting::Setting::new("config").expect("Config Load Error");
@@ -27,7 +28,7 @@ async fn main() -> tide::Result<()> {
     });
 
     app.at("/").get(|_| async {
-        Ok(json!{CONFIG.clone()})
+        Ok("hello world")
     });
     log::info!("app is running");
     app.listen(CONFIG.server.clone().listener()).await?;
