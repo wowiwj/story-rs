@@ -12,12 +12,15 @@ pub struct ApiErr {
 }
 
 impl ApiErr {
+
+    #[allow(dead_code)]
     pub fn builder() -> Self {
         Self {
             meta: HashMap::new()
         }
     }
 
+    #[allow(dead_code)]
     pub fn add(&mut self, typ: &str, info: &str) -> &mut Self {
         let meta_info = self.meta.get_mut(typ);
         match meta_info {
@@ -33,6 +36,7 @@ impl ApiErr {
         }
     }
 
+    #[allow(dead_code)]
     pub fn build(&self) -> HashMap<String, Vec<String>> {
         self.meta.clone()
     }
@@ -63,31 +67,37 @@ impl<T: Serialize> Api<T> {
         Self::new(None, status, None)
     }
 
+    #[allow(dead_code)]
     pub fn status(&mut self, status: &status::Status) -> &mut Self {
         self.code = status.0;
         self.message = status.1.clone();
         self
     }
 
+    #[allow(dead_code)]
     pub fn message(&mut self,message: String) -> &mut Self{
         self.message = message;
         self
     }
 
+    #[allow(dead_code)]
     pub fn data(&mut self,data: T) -> &mut Self{
         self.data = Some(data);
         self
     }
 
+    #[allow(dead_code)]
     pub fn errors(&mut self,errors: T) -> &mut Self{
         self.errors = Some(errors);
         self
     }
 
+    #[allow(dead_code)]
     pub fn error_validate(errors: T) -> tide::Result {
         Self::builder(&status::BAD_REQUEST).errors(errors).response()
     }
 
+    #[allow(dead_code)]
     pub fn response(&self) -> tide::Result {
         let s_json = json!(self);
         let mut res = Response::new(StatusCode::Ok);
@@ -95,10 +105,12 @@ impl<T: Serialize> Api<T> {
         Ok(res)
     }
 
+    #[allow(dead_code)]
     pub fn success(data: T) -> tide::Result {
         Self::new(Some(data), &status::OK, None).response()
     }
 
+    #[allow(dead_code)]
     pub fn error(e: T) -> tide::Result {
         Self::new(None, &status::BAD_REQUEST, Some(e)).response()
     }

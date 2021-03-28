@@ -6,7 +6,7 @@ create table if not exists `users`
     name              varchar(50)  not null,
     email             varchar(100) not null,
     phone             varchar(20)  null,
-    gander            int unsigned           default 0 not null,
+    gender            int unsigned           default 0 not null,
     email_verified_at timestamp    null,
     password          varchar(255) not null,
     created_at        timestamp    null null default current_timestamp,

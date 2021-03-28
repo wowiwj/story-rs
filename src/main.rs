@@ -5,6 +5,7 @@ mod setting;
 mod state;
 mod users;
 mod util;
+mod models;
 
 
 use crate::state::State;

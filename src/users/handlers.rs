@@ -4,7 +4,7 @@ use sqlx::query_as;
 use crate::users::schema::{ResUser, Register};
 use validator::Validate;
 use crate::util::api::{Api, ApiErr};
-
+use crate::models::users::User;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {
@@ -14,7 +14,7 @@ pub async fn register(mut req: tide::Request<State>) -> tide::Result {
     }
     let conn = &req.state().db;
 
-    if let Ok(_row) = sqlx::query(r#"select * from users where email = ?"#)
+    if let Ok(_row) = sqlx::query(r#"select * from users where email = ? and deleted_at is null"#)
         .bind(&reg_data.email)
         .fetch_one(conn).await {
         return Api::error(ApiErr::builder()
@@ -22,7 +22,10 @@ pub async fn register(mut req: tide::Request<State>) -> tide::Result {
             .build()
         );
     }
-    Api::success(reg_data)
+    let mut  user = User::from(reg_data);
+    let id = user.create(conn).await?;
+    user.id = id;
+    Api::success(ResUser::from(user))
 }
 
 pub async fn login(_req: tide::Request<State>) -> tide::Result {
@@ -31,8 +34,8 @@ pub async fn login(_req: tide::Request<State>) -> tide::Result {
 
 pub async fn index(req: tide::Request<State>) -> tide::Result {
     let conn = &req.state().db;
-    let result: Vec<ResUser> = query_as!(ResUser,r#"select id,name,email,phone,created_at from users"#)
+    let result: Vec<ResUser> = query_as!(ResUser,r#"select id,name,email,phone,created_at from users where deleted_at is null"#)
         .fetch_all(conn)
         .await?;
-    Api::success(Some(result))
+    Api::success(result)
 }
