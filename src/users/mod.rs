@@ -3,6 +3,7 @@ pub mod schema;
 
 use tide::Server;
 use crate::state::State;
+use crate::util::auth::JwtMiddleWare;
 
 pub fn routes(router:&mut Server<State>) {
 
@@ -12,6 +13,6 @@ pub fn routes(router:&mut Server<State>) {
     auth.at("/login").post(handlers::login);
 
     // 用户路由
-    let mut users = router.at("/users");
+    let mut users = router.with(JwtMiddleWare::new()).at("/users");
     users.at("/").get(handlers::index);
 }
