@@ -6,6 +6,16 @@ use validator::Validate;
 use crate::models::users::User;
 
 
+#[derive(Serialize, Deserialize,Validate)]
+pub struct Login {
+    #[validate(email(message = "请输入正确的邮箱"))]
+    pub email: String,
+    #[validate(length(min = 6, message = "密码不能小于6位"))]
+    pub password: String,
+}
+
+
+
 #[derive(Deserialize,Serialize,Validate)]
 pub(crate) struct Register {
     #[validate(length(min = 2, message = "用户名不能小于2位"))]

@@ -1,11 +1,13 @@
-use {tide::Response};
+
 use crate::state::State;
 use sqlx::query_as;
-use crate::users::schema::{ResUser, Register, ResAuthUser};
+use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;
 use crate::util::api::{Api, ApiErr};
 use crate::models::users::User;
 use crate::util::jwt::AuthUser;
+use std::result::Result::Err;
+use crate::util::crypt::password_verify;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {
@@ -15,27 +17,42 @@ pub async fn register(mut req: tide::Request<State>) -> tide::Result {
     }
     let conn = &req.state().db;
 
-    if let Ok(_row) = sqlx::query(r#"select * from users where email = ? and deleted_at is null"#)
-        .bind(&reg_data.email)
-        .fetch_one(conn).await {
-        return Api::error(ApiErr::builder()
+    if  User::find_by_email(&reg_data.email, conn).await.is_ok() {
+        return ApiErr::builder()
             .add("email", "用户邮箱已存在")
-            .build()
-        );
+            .build();
     }
-    let mut  user = User::from(reg_data);
+    let mut user = User::from(reg_data);
     let id = user.create(conn).await?;
     user.id = id;
     let token = AuthUser::from(&user).create_token()?;
 
-    Api::success(ResAuthUser{
+    Api::success(ResAuthUser {
         user: ResUser::from(user),
-        token: token
+        token: token,
     })
 }
 
-pub async fn login(_req: tide::Request<State>) -> tide::Result {
-    Ok(Response::from(format!("login")))
+pub async fn login(mut req: tide::Request<State>) -> tide::Result {
+    let login_data: Login = req.body_json().await?;
+    if let Err(e) = login_data.validate() {
+        return Api::error_validate(e);
+    }
+    let conn = &req.state().db;
+    let user = match User::find_by_email(&login_data.email, conn).await {
+        Ok(u) => u,
+        Err(_) => return ApiErr::builder().add("email", "当前用户不存在").build()
+    };
+    if !password_verify(&user.password, &login_data.password) {
+        return ApiErr::builder()
+            .add("password", "用户名或密码不存在")
+            .build();
+    }
+    let token = AuthUser::from(&user).create_token()?;
+    Api::success(ResAuthUser {
+        user: ResUser::from(user),
+        token: token,
+    })
 }
 
 pub async fn index(req: tide::Request<State>) -> tide::Result {

@@ -46,6 +46,14 @@ impl User {
             .last_insert_id();
         Ok(id)
     }
+
+    pub async fn find_by_email(email: &str, pool: &MySqlPool) -> anyhow::Result<User> {
+        let mut conn = pool.acquire().await?;
+        let u = sqlx::query_as::<_,User>(r#"select * from users where email = ? and deleted_at is null"#)
+            .bind(email)
+            .fetch_one(&mut conn).await?;
+        Ok(u)
+    }
 }
 
 impl From<Register> for User {

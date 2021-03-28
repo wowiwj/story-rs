@@ -6,7 +6,7 @@ lazy_static! {
     static ref CRYPTO_MEM: u32 = 4096;
     static ref CRYPTO_TIME: u32 = 10;
     static ref CRYPTO_LANES: u32 = 4;
-    static ref CRYPTO_LEN: u32 = 32;
+    static ref CRYPTO_LEN: u32 = 64;
     static ref SALT_LEN: usize = 12;
 }
 

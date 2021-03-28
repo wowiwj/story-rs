@@ -37,8 +37,8 @@ impl ApiErr {
     }
 
     #[allow(dead_code)]
-    pub fn build(&self) -> HashMap<String, Vec<String>> {
-        self.meta.clone()
+    pub fn build(&self) -> tide::Result {
+        Api::error(self.meta.clone())
     }
 }
 
