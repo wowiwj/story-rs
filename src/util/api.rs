@@ -2,43 +2,36 @@ use serde::{Serialize};
 use crate::util::status;
 use {tide::Response, tide::prelude::*,tide::StatusCode};
 
-use std::collections::HashMap;
+
+use crate::util::error::ApiErr;
+use std::option::Option::Some;
 
 
+pub async fn handler(mut res: Response) -> tide::Result {
 
-#[derive(Serialize)]
-pub struct ApiErr {
-    pub meta: HashMap<String, Vec<String>>
-}
+    // 获取错误信息
+    let error = match res.take_error() {
+        None => return Ok(res),
+        Some(err) => err
+    };
 
-impl ApiErr {
-
-    #[allow(dead_code)]
-    pub fn builder() -> Self {
-        Self {
-            meta: HashMap::new()
-        }
+    // 特定类型转换
+    if let Some(err) = error.downcast_ref::<ApiErr>() {
+        tide::log::info!("success!!!");
+        let body = Api::new(None, err.status, Some(&err.meta));
+        res.set_body(json! {body});
+        res.set_status(StatusCode::Ok);
+        return Ok(res);
     }
 
-    #[allow(dead_code)]
-    pub fn add(&mut self, typ: &str, info: &str) -> &mut Self {
-        let meta_info = self.meta.get_mut(typ);
-        match meta_info {
-            Some(meta) => {
-                meta.push(String::from(info));
-                self
-            }
-            None => {
-                let meta = vec![String::from(info)];
-                self.meta.insert(String::from(typ), meta);
-                self
-            }
-        }
-    }
-
-    #[allow(dead_code)]
-    pub fn build(&self) -> tide::Result {
-        Api::error(self.meta.clone())
+    tide::log::info!("{:#?}", error);
+    // 状态码映射
+    match res.status() {
+        StatusCode::Ok => Ok(res),
+        StatusCode::UnprocessableEntity => ApiErr::status(&status::BAD_REQUEST).build(),
+        StatusCode::Unauthorized => ApiErr::status(&status::UNAUTH).build(),
+        StatusCode::BadRequest => ApiErr::status(&status::BAD_REQUEST).build(),
+        _ => ApiErr::status(&status::SYS_ERROR).build(),
     }
 }
 

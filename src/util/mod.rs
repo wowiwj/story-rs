@@ -4,4 +4,5 @@ pub mod status;
 pub mod crypt;
 pub mod jwt;
 pub mod auth;
+pub mod error;
 

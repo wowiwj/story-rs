@@ -10,6 +10,7 @@ mod models;
 
 use crate::state::State;
 use tide::log;
+use tide::utils::After;
 
 lazy_static!(
     static ref CONFIG: setting::Setting = setting::Setting::new("config").expect("Config Load Error");
@@ -21,6 +22,8 @@ async fn main() -> tide::Result<()> {
     log::info!("setting, {}", CONFIG.server.domain);
     let state = State::new().await?;
     let mut app = tide::with_state(state.clone());
+
+    app.with(After(util::api::handler));
 
     app.at("/api").nest({
         let mut api = tide::with_state(state.clone());
