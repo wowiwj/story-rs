@@ -5,9 +5,11 @@ use crate::util::status;
 use crate::util::api::Api;
 
 
+pub type MetaType = HashMap<String, Vec<String>>;
+
 #[derive(Debug)]
 pub struct ApiErr {
-    pub meta: HashMap<String, Vec<String>>,
+    pub meta: MetaType,
     pub message: String,
     pub status: &'static status::Status,
 }
@@ -59,6 +61,9 @@ impl ApiErr {
 
     #[allow(dead_code)]
     pub fn build(&self) -> tide::Result {
-        Api::error(self.meta.clone())
+        if self.meta.is_empty() {
+            return  Api::<MetaType>::error(None)
+        }
+        Api::error(Some(self.meta.clone()))
     }
 }

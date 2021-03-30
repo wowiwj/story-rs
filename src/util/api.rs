@@ -3,8 +3,9 @@ use crate::util::status;
 use {tide::Response, tide::prelude::*,tide::StatusCode};
 
 
-use crate::util::error::ApiErr;
+use crate::util::error::{ApiErr, MetaType};
 use std::option::Option::Some;
+use serde_json::Value;
 
 
 pub async fn handler(mut res: Response) -> tide::Result {
@@ -18,8 +19,12 @@ pub async fn handler(mut res: Response) -> tide::Result {
     // 特定类型转换
     if let Some(err) = error.downcast_ref::<ApiErr>() {
         tide::log::info!("success!!!");
-        let body = Api::new(None, err.status, Some(&err.meta));
-        res.set_body(json! {body});
+        let meta: Option<MetaType> = match &err.meta.is_empty() {
+            false => Some(err.meta.clone()),
+            true => None
+        };
+        let api = Api::new(None, err.status,  meta);
+        res.set_body(api.body());
         res.set_status(StatusCode::Ok);
         return Ok(res);
     }
@@ -92,10 +97,14 @@ impl<T: Serialize> Api<T> {
 
     #[allow(dead_code)]
     pub fn response(&self) -> tide::Result {
-        let s_json = json!(self);
         let mut res = Response::new(StatusCode::Ok);
-        res.set_body(s_json);
+        res.set_body(self.body());
         Ok(res)
+    }
+
+    pub fn body(&self) -> Value{
+        let s_json = json!(self);
+        s_json
     }
 
     #[allow(dead_code)]
@@ -104,8 +113,8 @@ impl<T: Serialize> Api<T> {
     }
 
     #[allow(dead_code)]
-    pub fn error(e: T) -> tide::Result {
-        Self::new(None, &status::BAD_REQUEST, Some(e)).response()
+    pub fn error(e: Option<T>) -> tide::Result {
+        Self::new(None, &status::BAD_REQUEST, e).response()
     }
 
 }
