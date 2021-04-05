@@ -1,6 +1,6 @@
 
 use crate::state::State;
-use sqlx::{query_as, MySqlPool};
+
 use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;
 use crate::util::api::{Api};
@@ -13,7 +13,6 @@ use crate::util::auth::Auth;
 use quaint::ast::Select;
 use quaint::prelude::*;
 use quaint::visitor::{Mysql, Visitor};
-use crate::query::StQuery;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {

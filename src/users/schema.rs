@@ -4,7 +4,7 @@ use chrono::{Utc};
 use crate::util::date_format;
 use validator::Validate;
 use crate::models::users::User;
-use sqlx::{FromRow, MySqlPool};
+use sqlx::{FromRow};
 
 
 #[derive(Serialize, Deserialize,Validate)]
