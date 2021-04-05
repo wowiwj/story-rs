@@ -4,7 +4,7 @@ use crate::users::schema::Register;
 use serde::Serialize;
 use crate::util::crypt::hash_password;
 use quaint::prelude::*;
-use crate::query::builder::QueryX;
+use crate::builder::builder::QueryX;
 
 
 #[derive(sqlx::Type, Debug)]
