@@ -64,7 +64,6 @@ pub async fn index(req: tide::Request<State>) -> tide::Result {
     Auth::check(&req)?;
     let conn = &req.state().db;
     let select = Select::from_table("users")
-        .columns(&["id", "name","phone", "email", "created_at"])
         .so_that("deleted_at".is_null());
     let (sql_str, _) = Mysql::build(select)?;
     let result: Vec<ResUser> = sqlx::query_as::<_, ResUser>(sql_str.as_str())
