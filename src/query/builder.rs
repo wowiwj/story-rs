@@ -7,9 +7,6 @@ use crate::query::convert::QueryXArgument;
 
 pub struct QueryX;
 
-
-impl QueryX {}
-
 impl QueryX {
     pub async fn find_as<'a, Q, T>(query: Q, pool: &MySqlPool) -> anyhow::Result<Vec<T>>
         where
