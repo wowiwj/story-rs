@@ -3,6 +3,8 @@ use sqlx::{FromRow, MySqlPool};
 use crate::users::schema::Register;
 use serde::Serialize;
 use crate::util::crypt::hash_password;
+use quaint::prelude::*;
+use crate::query::builder::QueryX;
 
 
 #[derive(sqlx::Type, Debug)]
@@ -13,7 +15,7 @@ pub(crate) enum Gender {
     Female = 2,
 }
 
-#[derive(FromRow,Serialize,Clone)]
+#[derive(FromRow, Serialize, Clone)]
 pub(crate) struct User {
     pub id: u64,
     pub name: String,
@@ -47,12 +49,15 @@ impl User {
         Ok(id)
     }
 
+
     pub async fn find_by_email(email: &str, pool: &MySqlPool) -> anyhow::Result<User> {
-        let mut conn = pool.acquire().await?;
-        let u = sqlx::query_as::<_,User>(r#"select * from users where email = ? and deleted_at is null"#)
-            .bind(email)
-            .fetch_one(&mut conn).await?;
-        Ok(u)
+        let select = Select::from_table("users").so_that(
+            "email".equals(email)
+                .and("deleted_at".is_null())
+        );
+
+        let u: User = QueryX::first_as(select, pool).await?;
+        return Ok(u);
     }
 }
 

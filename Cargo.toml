@@ -22,7 +22,7 @@ rust-argon2 = "0.8"
 rand = "0.7.3"
 base64 = "0.12.3"
 jsonwebtoken = "7"
-quaint = { version = "0.2.0-alpha.13"}
+quaint = { version = "0.2.0-alpha.13", features = ["mysql"] }
 
 
 
