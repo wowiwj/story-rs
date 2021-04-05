@@ -12,8 +12,7 @@ use crate::util::error::ApiErr;
 use crate::util::auth::Auth;
 use quaint::ast::Select;
 use quaint::prelude::*;
-use quaint::visitor::{Mysql, Visitor};
-use crate::query::builder::QueryX;
+use crate::builder::builder::QueryX;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {

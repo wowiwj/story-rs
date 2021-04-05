@@ -8,7 +8,7 @@ mod state;
 mod users;
 mod util;
 mod models;
-mod query;
+mod builder;
 
 
 use crate::state::State;

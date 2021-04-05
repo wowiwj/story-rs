@@ -3,11 +3,12 @@ use quaint::prelude::*;
 use sqlx::{FromRow, MySqlPool, MySql as MysqlX};
 use quaint::visitor::{Mysql, Visitor};
 use sqlx::query::QueryAs;
-use crate::query::convert::QueryXArgument;
+use crate::builder::convert::QueryXArgument;
 
 pub struct QueryX;
 
 impl QueryX {
+
     pub async fn find_as<'a, Q, T>(query: Q, pool: &MySqlPool) -> anyhow::Result<Vec<T>>
         where
             T: for<'r> FromRow<'r, MySqlRow> + 'a + Send + Unpin,
@@ -43,5 +44,3 @@ impl QueryX {
         query
     }
 }
-
-
