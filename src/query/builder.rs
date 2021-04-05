@@ -11,6 +11,17 @@ pub struct QueryX;
 impl QueryX {}
 
 impl QueryX {
+    pub async fn find_as<'a, Q, T>(query: Q, pool: &MySqlPool) -> anyhow::Result<Vec<T>>
+        where
+            T: for<'r> FromRow<'r, MySqlRow> + 'a + Send + Unpin,
+            Q: Into<Query<'a>> {
+        let mut conn = pool.acquire().await?;
+        let (sql, params) = Mysql::build(query)?;
+        let query = Self::bind_query(sql.as_str(), params);
+        let u = query.fetch_all(&mut conn).await?;
+        Ok(u)
+    }
+
     pub async fn first_as<'a, Q, T>(query: Q, pool: &MySqlPool) -> anyhow::Result<T>
         where
             T: for<'r> FromRow<'r, MySqlRow> + 'a + Send + Unpin,
