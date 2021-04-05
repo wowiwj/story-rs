@@ -1,6 +1,6 @@
 
 use crate::state::State;
-use sqlx::query_as;
+use sqlx::{query_as, MySqlPool};
 use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;
 use crate::util::api::{Api};
@@ -10,9 +10,10 @@ use std::result::Result::Err;
 use crate::util::crypt::password_verify;
 use crate::util::error::ApiErr;
 use crate::util::auth::Auth;
-
-
-
+use quaint::ast::Select;
+use quaint::prelude::*;
+use quaint::visitor::{Mysql, Visitor};
+use crate::query::StQuery;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {
@@ -63,7 +64,11 @@ pub async fn login(mut req: tide::Request<State>) -> tide::Result {
 pub async fn index(req: tide::Request<State>) -> tide::Result {
     Auth::check(&req)?;
     let conn = &req.state().db;
-    let result: Vec<ResUser> = query_as!(ResUser,r#"select id,name,email,phone,created_at from users where deleted_at is null"#)
+    let select = Select::from_table("users")
+        .columns(&["id", "name","phone", "email", "created_at"])
+        .so_that("deleted_at".is_null());
+    let (sql_str, _) = Mysql::build(select)?;
+    let result: Vec<ResUser> = sqlx::query_as::<_, ResUser>(sql_str.as_str())
         .fetch_all(conn)
         .await?;
     Api::success(result)

@@ -4,6 +4,7 @@ use chrono::{Utc};
 use crate::util::date_format;
 use validator::Validate;
 use crate::models::users::User;
+use sqlx::{FromRow, MySqlPool};
 
 
 #[derive(Serialize, Deserialize,Validate)]
@@ -34,7 +35,7 @@ pub(crate) struct ResAuthUser {
     pub(crate) token: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize,FromRow)]
 pub(crate) struct ResUser {
     pub id: u64,
     pub name: String,

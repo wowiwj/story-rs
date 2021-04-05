@@ -1,3 +1,5 @@
+#![feature(in_band_lifetimes)]
+#![feature(allocator_api)]
 #[macro_use]
 extern crate lazy_static;
 
