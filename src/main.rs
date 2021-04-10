@@ -9,6 +9,7 @@ mod users;
 mod util;
 mod models;
 mod builder;
+mod stories;
 
 
 use crate::state::State;
@@ -31,6 +32,7 @@ async fn main() -> tide::Result<()> {
     app.at("/api").nest({
         let mut api = tide::with_state(state.clone());
         users::routes(&mut api);
+        stories::routes(&mut api);
         api
     });
 
