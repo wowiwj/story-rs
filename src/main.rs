@@ -11,8 +11,6 @@ use common::state::State;
 use web::users;
 use web::stories;
 
-mod util;
-
 
 lazy_static!(
     static ref CONFIG: setting::Setting = setting::Setting::new("config").expect("Config Load Error");
