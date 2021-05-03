@@ -3,12 +3,12 @@ use common::state::State;
 
 use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;
-use crate::util::api::{Api};
+use common::api::api::{Api};
 use crate::models::users::User;
 use crate::util::jwt::{AuthUser};
 use std::result::Result::Err;
 use crate::util::crypt::password_verify;
-use crate::util::error::ApiErr;
+use common::api::error::ApiErr;
 use crate::util::auth::Auth;
 use quaint::ast::Select;
 use quaint::prelude::*;

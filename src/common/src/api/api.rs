@@ -1,12 +1,12 @@
-use serde::{Serialize};
-use crate::util::status;
-use {tide::Response, tide::prelude::*,tide::StatusCode};
-
-
-use crate::util::error::{ApiErr, MetaType};
 use std::option::Option::Some;
+
+use serde::Serialize;
 use serde_json::Value;
 
+use {tide::prelude::*, tide::Response, tide::StatusCode};
+use crate::api::status;
+
+use crate::api::error::{ApiErr, MetaType};
 
 pub async fn handler(mut res: Response) -> tide::Result {
 

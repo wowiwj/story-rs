@@ -1,7 +1,7 @@
 use chrono::prelude::{DateTime};
 use serde::{Deserialize, Serialize};
 use chrono::{Utc};
-use crate::util::date_format;
+use common::format::date_format;
 use validator::Validate;
 use crate::models::users::User;
 use sqlx::{FromRow};

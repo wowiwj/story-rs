@@ -27,7 +27,7 @@ async fn main() -> tide::Result<()> {
     let state = State::new(&CONFIG).await?;
     let mut app = tide::with_state(state.clone());
 
-    app.with(After(util::api::handler));
+    app.with(After(common::api::api::handler));
 
     app.at("/api").nest({
         let mut api = tide::with_state(state.clone());

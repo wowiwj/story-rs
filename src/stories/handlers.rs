@@ -1,6 +1,6 @@
 use common::state::State;
 
-use crate::util::api::Api;
+use common::api::api::Api;
 use crate::builder::builder::QueryX;
 use crate::builder::page::{Page, PageInfo};
 use quaint::ast::{Select, Comparable};

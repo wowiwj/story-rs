@@ -1,9 +1,10 @@
+use std::collections::HashMap;
 use std::error;
 use std::fmt;
-use std::collections::HashMap;
-use crate::util::status;
-use crate::util::api::Api;
 
+use crate::api::status;
+
+use crate::api::api::Api;
 
 pub type MetaType = HashMap<String, Vec<String>>;
 
