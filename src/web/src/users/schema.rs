@@ -5,7 +5,8 @@ use common::format::date_format;
 use validator::Validate;
 use sqlx::{FromRow};
 use db::models::users::{User, Gender};
-use common::hash::crypt::hash_password;
+use common::hash::PasswordHasher;
+use common::hash::crypt::Hasher;
 
 
 #[derive(Serialize, Deserialize,Validate)]
@@ -32,12 +33,13 @@ pub(crate) struct Register {
 impl From<Register> for User {
     fn from(r: Register) -> Self {
         let now = Utc::now().into();
+        let hasher = PasswordHasher::default();
         User {
             id: 0,
             name: r.username,
             email: r.email,
             phone: r.phone,
-            password: hash_password(&r.password),
+            password: hasher.hash_password(&r.password),
             gender: Gender::None as u32,
             created_at: now,
             updated_at: None,

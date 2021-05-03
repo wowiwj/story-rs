@@ -12,7 +12,7 @@ use quaint::ast::Select;
 use quaint::prelude::*;
 use db::builder::builder::QueryX;
 use common::jwt::jwt::AuthUser;
-use common::hash::crypt::password_verify;
+use common::hash::crypt::{PasswordHasher, Hasher};
 use common::jwt::auth::Auth;
 
 
@@ -50,7 +50,8 @@ pub async fn login(mut req: tide::Request<State>) -> tide::Result {
         Ok(u) => u,
         Err(_) => return ApiErr::builder().add("email", "当前用户不存在").build()
     };
-    if !password_verify(&user.password, &login_data.password) {
+    let hasher = PasswordHasher::default();
+    if !hasher.password_verify(&user.password, &login_data.password) {
         return ApiErr::builder()
             .add("password", "用户名或密码不存在")
             .build();
