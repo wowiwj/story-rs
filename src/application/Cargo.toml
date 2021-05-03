@@ -1,0 +1,30 @@
+[package]
+name = "story-application"
+version = "0.1.0"
+authors = ["wangju <wangju@shein.com>"]
+edition = "2018"
+
+
+[[bin]]
+name = "story_application"
+path = "src/main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+common = { package = "story-common", path = "../../src/common" }
+db = { package = "story-db", path = "../../src/db" }
+web = { package = "story-web", path = "../../src/web" }
+
+tide = "0.16.0"
+async-std = { version = "1.8.0", features = ["attributes"] }
+serde = { version = "1.0", features = ["derive"] }
+lazy_static = "1.4.0"
+config = "0.11"
+sqlx = { version = "0.5.1", features = ["mysql", "chrono", "sqlite", "runtime-async-std-native-tls"] }
+serde_json = "1.0"
+chrono = { version = "0.4.19", features = ["serde"] }
+validator = { version = "0.13", features = ["derive"] }
+anyhow = "1.0"
+quaint = { version = "0.2.0-alpha.13", features = ["mysql", "chrono"] }
+lettre = "0.10.0-beta.3"
