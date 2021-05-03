@@ -1,6 +1,6 @@
 use sqlx::{MySqlPool};
 use sqlx::mysql::{MySqlConnectOptions};
-use config::Config;
+
 use crate::setting::Setting;
 
 

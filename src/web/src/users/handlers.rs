@@ -7,7 +7,7 @@ use common::api::api::{Api};
 use db::models::users::User;
 use std::result::Result::Err;
 use common::api::error::ApiErr;
-use common::jwt::auth;
+
 use quaint::ast::Select;
 use quaint::prelude::*;
 use db::builder::builder::QueryX;

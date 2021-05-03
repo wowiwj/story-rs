@@ -2832,6 +2832,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
+name = "story-application"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-std",
+ "chrono",
+ "config",
+ "lazy_static",
+ "lettre",
+ "quaint",
+ "serde 1.0.124",
+ "serde_json",
+ "sqlx",
+ "story-common",
+ "story-db",
+ "story-web",
+ "tide",
+ "validator",
+]
+
+[[package]]
 name = "story-common"
 version = "0.1.0"
 dependencies = [
@@ -2858,27 +2879,6 @@ dependencies = [
  "serde 1.0.124",
  "sqlx",
  "story-common",
-]
-
-[[package]]
-name = "story-rs"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-std",
- "chrono",
- "config",
- "lazy_static",
- "lettre",
- "quaint",
- "serde 1.0.124",
- "serde_json",
- "sqlx",
- "story-common",
- "story-db",
- "story-web",
- "tide",
- "validator",
 ]
 
 [[package]]
