@@ -12,7 +12,8 @@ pub fn routes(router:&mut Server<State>) {
     auth.at("/register").post(handlers::register);
     auth.at("/login").post(handlers::login);
 
+
     // 用户路由
-    let mut users = router.with(JwtMiddleWare::new()).at("/users");
+    let mut users = router.with(JwtMiddleWare::new(router.state().clone())).at("/users");
     users.at("/").get(handlers::index);
 }

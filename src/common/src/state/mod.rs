@@ -6,7 +6,8 @@ use crate::setting::Setting;
 
 #[derive(Clone)]
 pub struct State {
-    pub db: MySqlPool
+    pub conf: Setting,
+    pub db: MySqlPool,
 }
 
 impl State {
@@ -21,7 +22,12 @@ impl State {
 
         let db = MySqlPool::connect_with(options).await?;
         Ok(State {
-            db
+            db,
+            conf: config.clone(),
         })
+    }
+
+    pub fn jwt_secret(&self) -> String {
+        String::from(&self.conf.server.jwt_secret)
     }
 }

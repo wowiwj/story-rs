@@ -31,7 +31,8 @@ pub async fn register(mut req: tide::Request<State>) -> tide::Result {
     let mut user = User::from(reg_data);
     let id = user.create(conn).await?;
     user.id = id;
-    let token = AuthUser::from(&user).create_token()?;
+    let auth = Auth::new(req.state().jwt_secret());
+    let token = auth.create_token(&AuthUser::from(&user))?;
 
     Api::success(ResAuthUser {
         user: ResUser::from(user),
@@ -54,7 +55,8 @@ pub async fn login(mut req: tide::Request<State>) -> tide::Result {
             .add("password", "用户名或密码不存在")
             .build();
     }
-    let token = AuthUser::from(&user).create_token()?;
+    let auth = Auth::new(req.state().jwt_secret());
+    let token = auth.create_token(&AuthUser::from(&user))?;
     Api::success(ResAuthUser {
         user: ResUser::from(user),
         token: token,
