@@ -1,6 +1,7 @@
 use sqlx::{MySqlPool};
-use crate::CONFIG;
 use sqlx::mysql::{MySqlConnectOptions};
+use config::Config;
+use crate::setting::Setting;
 
 
 #[derive(Clone)]
@@ -9,10 +10,8 @@ pub struct State {
 }
 
 impl State {
-    pub async fn new() -> tide::Result<Self> {
-        tide::log::info!("{}", &CONFIG.database.url());
-        // let db = MySqlPool::connect(&CONFIG.database.url()).await?;
-        let conf = &CONFIG.database;
+    pub async fn new(config: &Setting) -> tide::Result<Self> {
+        let conf = &config.database;
         let options = MySqlConnectOptions::new()
             .database(&conf.database)
             .port(conf.port)

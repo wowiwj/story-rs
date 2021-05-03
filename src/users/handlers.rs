@@ -1,5 +1,5 @@
 
-use crate::state::State;
+use common::state::State;
 
 use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;

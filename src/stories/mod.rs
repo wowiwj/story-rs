@@ -1,7 +1,7 @@
 mod handlers;
 
 use tide::Server;
-use crate::state::State;
+use common::state::State;
 
 pub fn routes(router: &mut Server<State>) {
     let mut stories = router.at("stories");

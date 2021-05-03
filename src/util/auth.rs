@@ -1,7 +1,7 @@
 use tide::{Middleware, Next, Request, Response};
 use crate::util::jwt::AuthUser;
 
-use crate::state::State;
+use common::state::State;
 use std::option::Option::Some;
 
 use crate::util::status;
