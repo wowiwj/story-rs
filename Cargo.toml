@@ -8,11 +8,16 @@ edition = "2018"
 
 [workspace]
 members = [
-    "src/common"
+    "src/common",
+    "src/db",
+    "src/web"
 ]
 
 [dependencies]
 common = { package = "story-common", path = "src/common" }
+db = { package = "story-db", path = "src/db" }
+web = { package = "story-web", path = "src/web" }
+
 tide = "0.16.0"
 async-std = { version = "1.8.0", features = ["attributes"] }
 serde = { version = "1.0", features = ["derive"] }
@@ -23,10 +28,6 @@ serde_json = "1.0"
 chrono = { version = "0.4.19", features = ["serde"] }
 validator = { version = "0.13", features = ["derive"] }
 anyhow = "1.0"
-rust-argon2 = "0.8"
-rand = "0.7.3"
-base64 = "0.12.3"
-jsonwebtoken = "7"
 quaint = { version = "0.2.0-alpha.13", features = ["mysql", "chrono"] }
 lettre = "0.10.0-beta.3"
 

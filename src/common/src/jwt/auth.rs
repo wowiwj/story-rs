@@ -1,11 +1,11 @@
 use tide::{Middleware, Next, Request, Response};
 
-use common::state::State;
+use crate::state::State;
 use std::option::Option::Some;
 
-use common::api::status;
-use common::api::error::ApiErr;
-use crate::util::jwt::AuthUser;
+use crate::api::status;
+use crate::api::error::ApiErr;
+use crate::jwt::jwt::AuthUser;
 
 
 pub struct Auth{}

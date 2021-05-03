@@ -44,7 +44,6 @@ impl QueryX {
             Q: Into<Query<'a>> {
         let mut conn = pool.acquire().await?;
         let (sql, params) = Mysql::build(query)?;
-        tide::log::info!("{:#?},{:#?}", sql, params);
         let query = Self::bind_as(sql.as_str(), params);
         let u = query.fetch_one(&mut conn).await?;
         Ok(u)

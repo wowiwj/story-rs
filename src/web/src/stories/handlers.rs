@@ -1,10 +1,10 @@
 use common::state::State;
 
 use common::api::api::Api;
-use crate::builder::builder::QueryX;
-use crate::builder::page::{Page, PageInfo};
+use db::builder::builder::QueryX;
 use quaint::ast::{Select, Comparable};
-use crate::models::stories::Story;
+use db::models::stories::Story;
+use db::builder::page::{Page, PageInfo};
 
 pub async fn stories(req: tide::Request<State>) -> tide::Result {
     let page = Page::default();

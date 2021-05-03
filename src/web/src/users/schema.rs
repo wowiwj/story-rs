@@ -3,8 +3,9 @@ use serde::{Deserialize, Serialize};
 use chrono::{Utc};
 use common::format::date_format;
 use validator::Validate;
-use crate::models::users::User;
 use sqlx::{FromRow};
+use db::models::users::{User, Gender};
+use common::hash::crypt::hash_password;
 
 
 #[derive(Serialize, Deserialize,Validate)]
@@ -26,6 +27,23 @@ pub(crate) struct Register {
     pub phone: Option<String>,
     #[validate(length(min = 6, message = "密码不能小于6位"))]
     pub password: String,
+}
+
+impl From<Register> for User {
+    fn from(r: Register) -> Self {
+        let now = Utc::now().into();
+        User {
+            id: 0,
+            name: r.username,
+            email: r.email,
+            phone: r.phone,
+            password: hash_password(&r.password),
+            gender: Gender::None as u32,
+            created_at: now,
+            updated_at: None,
+            deleted_at: None,
+        }
+    }
 }
 
 

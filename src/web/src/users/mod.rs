@@ -3,7 +3,7 @@ pub mod schema;
 
 use tide::Server;
 use common::state::State;
-use crate::util::auth::JwtMiddleWare;
+use common::jwt::auth::JwtMiddleWare;
 
 pub fn routes(router:&mut Server<State>) {
 

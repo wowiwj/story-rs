@@ -1,29 +1,17 @@
 use chrono::{Local, Duration};
 use jsonwebtoken::{encode, Header, EncodingKey, decode, DecodingKey, Validation, TokenData};
-use crate::CONFIG;
 
-
-use crate::models::users::User;
 use tide::prelude::*;
 use tide::http::headers::HeaderValues;
 
 
-#[derive(Deserialize,Debug)]
+#[derive(Deserialize, Debug)]
 pub struct AuthUser {
-    id: u64,
-    username: String,
-    email: String,
+    pub id: u64,
+    pub username: String,
+    pub email: String,
 }
 
-impl From<&User> for AuthUser {
-    fn from(user: &User) -> Self {
-        Self {
-            id: user.id,
-            username: user.name.to_string(),
-            email: user.email.to_string(),
-        }
-    }
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -57,7 +45,7 @@ impl From<&AuthUser> for Claims {
 
 impl AuthUser {
     pub fn get_secret() -> String {
-        String::from(&CONFIG.server.jwt_secret)
+        String::from("test")
     }
 
     pub fn create_token(&self) -> jsonwebtoken::errors::Result<String> {
@@ -74,12 +62,12 @@ impl AuthUser {
         let decode = decode(&token, &DecodingKey::from_secret(Self::get_secret().as_bytes()), &Validation::default());
 
         if let Err(ref e) = decode {
-            tide::log::info!("{}",e);
+            tide::log::info!("{}", e);
         }
 
         decode.map(|token_data: TokenData<Claims>| {
-                token_data.claims.into()
-            }).ok()
+            token_data.claims.into()
+        }).ok()
     }
 
     pub fn exact_token(header: Option<&HeaderValues>) -> Option<String> {

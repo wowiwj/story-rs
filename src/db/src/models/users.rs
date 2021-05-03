@@ -1,22 +1,21 @@
 use sqlx::types::chrono::{DateTime, Utc};
 use sqlx::{FromRow, MySqlPool};
-use crate::users::schema::Register;
 use serde::Serialize;
-use crate::util::crypt::hash_password;
 use quaint::prelude::*;
 use crate::builder::builder::QueryX;
+use common::jwt::jwt::AuthUser;
 
 
 #[derive(sqlx::Type, Debug)]
 #[sqlx(rename_all = "lowercase")]
-pub(crate) enum Gender {
+pub enum Gender {
     None = 0,
     Male = 1,
     Female = 2,
 }
 
 #[derive(FromRow, Serialize, Clone)]
-pub(crate) struct User {
+pub struct User {
     pub id: u64,
     pub name: String,
     pub email: String,
@@ -61,19 +60,12 @@ impl User {
     }
 }
 
-impl From<Register> for User {
-    fn from(r: Register) -> Self {
-        let now = Utc::now().into();
-        User {
-            id: 0,
-            name: r.username,
-            email: r.email,
-            phone: r.phone,
-            password: hash_password(&r.password),
-            gender: Gender::None as u32,
-            created_at: now,
-            updated_at: None,
-            deleted_at: None,
+impl From<&User> for AuthUser {
+    fn from(user: &User) -> Self {
+        Self {
+            id: user.id,
+            username: user.name.to_string(),
+            email: user.email.to_string(),
         }
     }
 }

@@ -4,15 +4,16 @@ use common::state::State;
 use crate::users::schema::{ResUser, Register, ResAuthUser, Login};
 use validator::Validate;
 use common::api::api::{Api};
-use crate::models::users::User;
-use crate::util::jwt::{AuthUser};
+use db::models::users::User;
 use std::result::Result::Err;
-use crate::util::crypt::password_verify;
 use common::api::error::ApiErr;
-use crate::util::auth::Auth;
+use common::jwt::auth;
 use quaint::ast::Select;
 use quaint::prelude::*;
-use crate::builder::builder::QueryX;
+use db::builder::builder::QueryX;
+use common::jwt::jwt::AuthUser;
+use common::hash::crypt::password_verify;
+use common::jwt::auth::Auth;
 
 
 pub async fn register(mut req: tide::Request<State>) -> tide::Result {

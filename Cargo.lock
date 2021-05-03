@@ -2835,13 +2835,29 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 name = "story-common"
 version = "0.1.0"
 dependencies = [
+ "base64 0.12.3",
  "chrono",
  "config",
+ "jsonwebtoken",
  "lazy_static",
+ "rand 0.7.3",
+ "rust-argon2",
  "serde 1.0.124",
  "serde_json",
  "sqlx",
  "tide",
+]
+
+[[package]]
+name = "story-db"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "quaint",
+ "rust-argon2",
+ "serde 1.0.124",
+ "sqlx",
+ "story-common",
 ]
 
 [[package]]
@@ -2850,19 +2866,31 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-std",
- "base64 0.12.3",
  "chrono",
  "config",
- "jsonwebtoken",
  "lazy_static",
  "lettre",
  "quaint",
- "rand 0.7.3",
- "rust-argon2",
  "serde 1.0.124",
  "serde_json",
  "sqlx",
  "story-common",
+ "story-db",
+ "story-web",
+ "tide",
+ "validator",
+]
+
+[[package]]
+name = "story-web"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "quaint",
+ "serde 1.0.124",
+ "sqlx",
+ "story-common",
+ "story-db",
  "tide",
  "validator",
 ]
