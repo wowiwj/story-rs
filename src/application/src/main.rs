@@ -1,38 +1,31 @@
-#![feature(in_band_lifetimes)]
-#![feature(allocator_api)]
+#[macro_use]
+extern crate rocket;
 
-use tide::log;
-use tide::utils::After;
-
-
-use common::state::State;
-use web::users;
-use web::stories;
-use common::setting::Setting;
+use diesel::PgConnection;
+use rocket_contrib::databases::database;
+use rocket::{Rocket, Build};
 
 
-#[async_std::main]
-async fn main() -> tide::Result<()> {
-    let conf: Setting = Setting::new("config").expect("Config Load Error");
-    log::start();
-    log::info!("setting, {}", &conf.server.domain);
+#[database("story_db")]
+pub struct DBPool(PgConnection);
 
-    let state = State::new(&conf).await?;
-    let mut app = tide::with_state(state.clone());
 
-    app.with(After(common::api::api::handler));
+#[get("/")]
+fn hello() -> String {
+    format!("Hello, year old named !")
+}
 
-    app.at("/api").nest({
-        let mut api = tide::with_state(state.clone());
-        users::routes(&mut api);
-        stories::routes(&mut api);
-        api
-    });
+fn rocket() -> Rocket<Build> {
+    rocket::build()
+        .mount("/", routes![hello])
+}
 
-    app.at("/").get(|_| async {
-        Ok("hello world")
-    });
-    log::info!("app is running");
-    app.listen(&conf.server.clone().listener()).await?;
-    Ok(())
+
+#[rocket::main]
+async fn main() {
+    if let Err(e) = rocket().launch().await {
+        println!("Whoops! Rocket didn't launch!");
+        // We drop the error to get a Rocket-formatted panic.
+        drop(e);
+    };
 }
